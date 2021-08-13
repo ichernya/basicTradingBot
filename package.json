@@ -1,0 +1,32 @@
+{
+  "name": "basictradingbot",
+  "version": "1.0.0",
+  "description": "Basic trading bot utilizing API calls",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "@alpacahq/alpaca-trade-api": "^2.4.0",
+    "dotenv": "^10.0.0",
+    "ib": "^0.2.9",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1",
+    "ts-node-dev": "^1.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ichernya/basicTradingBot.git"
+  },
+  "author": "ivan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ichernya/basicTradingBot/issues"
+  },
+  "homepage": "https://github.com/ichernya/basicTradingBot#readme"
+}
