@@ -13,9 +13,11 @@ const init = async () => {
     console.log('Buying power = ' + buying_power + ' cash = ' + cash + ' long market value = ' + long_market_value);
     console.log('equity = '+ value);
     const start = async () => {
-        const symbols = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
-        for (var i = 0; i < symbols.length; i++) {
-            var asset = await getAsset(symbols[i]);
+        try {
+        // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
+        const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX'];
+        for (var i = 0; i < tickers.length; i++) {
+            var asset = await getAsset(tickers[i]);
             //console.log(asset);
         }
         bodyBuy = {
@@ -36,39 +38,28 @@ const init = async () => {
             "time_in_force": "day"
             };
         var staged = [];
-        for (var j of symbols) {
-            const tick = j;
-            var price = [];
-            var high = [];
-            var low = [];
-            var time = [];
-            for (var i = 0; i < 30; i++) {
-                await getBars( 
-                                tick,
-                                moment().subtract(i+1, "days").format(),
-                                moment().subtract(i, "days").format(),
-                                i,
-                                time,
-                                price,
-                                high,
-                                low,
-                            )
+        var bars = [];
+        for (var tick of tickers) {
+            bars = [];
+            for (var daysAgo = 0; daysAgo < 30; daysAgo++) {
+                let start =  moment().subtract(daysAgo+1, "days").format();
+                let end = moment().subtract(daysAgo, "days").format();
+                let bar = await getBars(tick, start, end);
+                (bar && bars.push(bar));
             }
-            console.log(time);
-            console.log(price);
-            console.log(high);
-            console.log(low);
+            console.log("bars", bars);
             // stage a stock to be purchased when the stock is positive the day before,
             // and the high from the day before is > than the low of two days ago
             // that way the candlestick is growing up and we are buying on continuation
-            if (price[0] > 0 && (high[0] >= low[1])) {
+            if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
                 staged.push(tick);
             }
-            
         }
         console.log(staged);
+    } catch(e) {
+        console.log(e);
     }
-
+    }
     start();
 }
 init();
