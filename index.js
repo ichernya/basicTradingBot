@@ -1,11 +1,11 @@
 require('dotenv').config();
 const moment = require("moment");
 const { getEnabledCategories } = require('trace_events');
-const getAccount = require('./lib/account');
+const account = require('./lib/account');
 const orders = require('./lib/orders');
 
 const init = async () => {
-    const acc = await getAccount();
+    const acc = await account.getAccount();
     buying_power = acc.buying_power;
     cash = acc.cash;
     long_market_value = acc.long_market_value;
@@ -54,6 +54,7 @@ const init = async () => {
                 staged.push(tick);
             }
             if (orders.potentialUptrend(bars)) {
+                console.log(await account.getPosistion());
                 staged.push(tick);
             }
         }
