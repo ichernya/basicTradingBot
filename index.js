@@ -2,7 +2,7 @@ require('dotenv').config();
 const moment = require("moment");
 const { getEnabledCategories } = require('trace_events');
 const getAccount = require('./lib/account');
-const {getAsset, buyAsset, sellAsset, getBars} = require('./lib/orders');
+const orders = require('./lib/orders');
 
 const init = async () => {
     const acc = await getAccount();
@@ -17,7 +17,7 @@ const init = async () => {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
         const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX'];
         for (var i = 0; i < tickers.length; i++) {
-            var asset = await getAsset(tickers[i]);
+            var asset = await orders.getAsset(tickers[i]);
             //console.log(asset);
         }
         bodyBuy = {
@@ -41,17 +41,19 @@ const init = async () => {
         var bars = [];
         for (var tick of tickers) {
             bars = [];
-            for (var daysAgo = 0; daysAgo < 30; daysAgo++) {
+            for (var daysAgo = 0; daysAgo < 7; daysAgo++) {
                 let start =  moment().subtract(daysAgo+1, "days").format();
                 let end = moment().subtract(daysAgo, "days").format();
-                let bar = await getBars(tick, start, end);
+                let bar = await orders.getBars(tick, start, end);
                 (bar && bars.push(bar));
             }
-            console.log("bars", bars);
             // stage a stock to be purchased when the stock is positive the day before,
             // and the high from the day before is > than the low of two days ago
             // that way the candlestick is growing up and we are buying on continuation
             if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
+                staged.push(tick);
+            }
+            if (orders.potentialUptrend(bars)) {
                 staged.push(tick);
             }
         }
