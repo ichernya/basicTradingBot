@@ -40,6 +40,7 @@ const init = async () => {
             };
 
         var staged_buy = [];
+        var staged_sell = [];
         var bars = [];
         for (var tick of tickers) {
             bars = [];
@@ -55,11 +56,21 @@ const init = async () => {
             if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
                 staged_buy.push(tick);
             }
-            if (orders.potentialUptrend(bars)) {
-                staged_buy.push(tick);
+            if (((bars[0].ClosePrice - bars[0].OpenPrice) < 0) && (bars[0].LowPrice <= bars[1].HighPrice)) {
+                staged_sell.push(tick);
             }
         }
-        console.log(await getAsset("AAPL"));
+        console.log(staged_sell);
+        console.log(staged_buy);
+        console.log(await orders.getAsset("AAPL"));
+        const placeholder = "AAPL";
+        const oneMinuteMS = 60000;
+        const now = new Date();
+        const start = new Date(now - (2 * oneMinuteMS)).toISOString();
+        const end = new Date(now - oneMinuteMS).toISOString();
+        const stock = await getPrice({placeholder, start, end});
+        // price of stock in real time ==
+        const stock_price = stock.c;
         // for (var tick of staged_buy) {
         //     let todayStart = moment().subtract(1, "days").format();
         //     let todayEnd = moment().subtract(0, "days").format();
