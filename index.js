@@ -5,6 +5,7 @@ const account = require('./lib/account');
 const orders = require('./lib/orders');
 
 const init = async () => {
+    const account_positions = await account.getPosistion()
     const acc = await account.getAccount();
     buying_power = acc.buying_power;
     cash = acc.cash;
@@ -37,7 +38,8 @@ const init = async () => {
             "type": "market",
             "time_in_force": "day"
             };
-        var staged = [];
+
+        var staged_buy = [];
         var bars = [];
         for (var tick of tickers) {
             bars = [];
@@ -51,14 +53,29 @@ const init = async () => {
             // and the high from the day before is > than the low of two days ago
             // that way the candlestick is growing up and we are buying on continuation
             if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
-                staged.push(tick);
+                staged_buy.push(tick);
             }
             if (orders.potentialUptrend(bars)) {
-                console.log(await account.getPosistion());
-                staged.push(tick);
+                staged_buy.push(tick);
             }
         }
-        console.log(staged);
+        console.log(await getAsset("AAPL"));
+        // for (var tick of staged_buy) {
+        //     let todayStart = moment().subtract(1, "days").format();
+        //     let todayEnd = moment().subtract(0, "days").format();
+        //     let yesterdayStart = moment().subtract(2, "days").format();
+        //     let yesterdayEnd = moment().subtract(1, "days").format();
+        //     let todayBar = await orders.getBars(tick, todayStart, todayEnd);
+        //     let yesterdayBar = await orders.getBars(tick, yesterdayStart, yesterdayEnd);
+        //     let ninetyFivePercent = Math.floor(buying_power * 0.95);
+        //     if(todayBar.LowPrice > yesterdayBar.LowPrice) {
+        //         while(buying_power > ninetyFivePercent)
+        //     }
+        // }
+        // for (var position of positions) {
+        //
+        // }
+        console.log(staged_buy);
     } catch(e) {
         console.log(e);
     }
