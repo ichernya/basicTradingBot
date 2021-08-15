@@ -60,15 +60,22 @@ const init = async () => {
                 staged_sell.push(tick);
             }
         }
-        console.log(staged_sell);
-        console.log(staged_buy);
-        console.log(await orders.getAsset("AAPL"));
-        const placeholder = "AAPL";
-        const oneMinuteMS = 60000;
-        const now = new Date();
-        const start = new Date(now - (2 * oneMinuteMS)).toISOString();
-        const end = new Date(now - oneMinuteMS).toISOString();
-        const stock = await getPrice({placeholder, start, end});
+        console.log("Staged to sell: " + staged_sell);
+        console.log("Staged to buy: " + staged_buy);
+        console.log("Staged to sell && able to sell:")
+        for (var stock of account_positions) {
+            if (stock.symbol in staged_sell) {
+                console.log(stock);
+            }
+        }
+        
+        // const placeholder = "AAPL";
+        // const oneMinuteMS = 60000;
+        // const now = new Date();
+        // const start = moment().subtract(1, "days").format();
+        // const end = moment().subtract(20, "minutes").format();
+        // const stock = await orders.getPrice({placeholder, start, end});
+        //console.log(stock);
         // price of stock in real time ==
         const stock_price = stock.c;
         // for (var tick of staged_buy) {
@@ -86,7 +93,7 @@ const init = async () => {
         // for (var position of positions) {
         //
         // }
-        console.log(staged_buy);
+        //console.log(staged_buy);
     } catch(e) {
         console.log(e);
     }
