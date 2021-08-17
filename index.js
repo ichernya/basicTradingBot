@@ -13,6 +13,10 @@ const init = async () => {
     value = parseInt(cash) + parseInt(long_market_value);
     console.log('Buying power = ' + buying_power + ' cash = ' + cash + ' long market value = ' + long_market_value);
     console.log('equity = '+ value);
+
+
+    console.log(staged_buy);
+    console.log(staged_sell);
     const start = async () => {
         try {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
@@ -68,16 +72,9 @@ const init = async () => {
                 console.log(stock);
             }
         }
-        
-        // const placeholder = "AAPL";
-        // const oneMinuteMS = 60000;
-        // const now = new Date();
-        // const start = moment().subtract(1, "days").format();
-        // const end = moment().subtract(20, "minutes").format();
-        // const stock = await orders.getPrice({placeholder, start, end});
-        //console.log(stock);
+
+
         // price of stock in real time ==
-        const stock_price = stock.c;
         // for (var tick of staged_buy) {
         //     let todayStart = moment().subtract(1, "days").format();
         //     let todayEnd = moment().subtract(0, "days").format();
