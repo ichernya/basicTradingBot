@@ -7,7 +7,7 @@ const uri = "mongodb+srv://admin:3n9anyC62Q5szyQZ@cluster0.0nhqc.mongodb.net/Pro
 async function connectMongo() {
     try {
         await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log("connected");
+        console.log("Connected");
     } catch(e) {
         console.log(e);
     } finally {
@@ -15,17 +15,25 @@ async function connectMongo() {
     }
 }
 
-const barSchema = new mongoose.Schema({
-    timePosted: Date,
-    timeFormat: String,
-    daysAgo: Number,
-    title: String,
-    address: String,
-    price: String,
-    specs: String,
-    url: String
+const ticker = new mongoose.Schema({
+    name: String
   });
 
+const stagedToBuy = new mongoose.Schema({
+    list: []
+})
 
+const stagedToSell = new mongoose.Schema({
+    list: []
+})
+const Buy = mongoose.model('Buy', stagedToBuy);
+const buy = new Buy;
+const Sell = mongoose.model('Sell', stagedToSell);
+const sell = new Sell;
+
+buy.list.pull(1);
+
+
+console.log(buy);
 
 connectMongo();
