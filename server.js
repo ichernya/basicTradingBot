@@ -10,11 +10,9 @@ async function connectMongo() {
         console.log("Connected");
     } catch(e) {
         console.log(e);
-    } finally {
-        console.log("Finally");
     }
 }
-
+connectMongo();
 const ticker = new mongoose.Schema({
     name: String
   });
@@ -27,13 +25,31 @@ const stagedToSell = new mongoose.Schema({
     list: []
 })
 const Buy = mongoose.model('Buy', stagedToBuy);
-const buy = new Buy;
+const buy = new Buy();
 const Sell = mongoose.model('Sell', stagedToSell);
-const sell = new Sell;
+const sell = new Sell();
 
-buy.list.pull(1);
+const addToStageBuy = async (tick) => {
+    console.log(tick)
+    buy.list.push(tick);
+    console.log(buy)
+    await buy.save();
+}
 
 
-console.log(buy);
+const addToStageSell = async (tick) => {
+    console.log(tick)
+    sell.list.push(tick);
+    console.log(sell)
+    await sell.save();
+}
 
-connectMongo();
+console.log(Buy.find());
+console.log(Sell.find());
+
+module.exports = {
+    buy,
+    sell,
+    addToStageBuy,
+    addToStageSell,
+};

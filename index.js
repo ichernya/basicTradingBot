@@ -3,6 +3,7 @@ const moment = require("moment");
 const { getEnabledCategories } = require('trace_events');
 const account = require('./lib/account');
 const orders = require('./lib/orders');
+const {buy, sell, addToStageSell, addToStageBuy} = require('./server.js')
 
 const init = async () => {
     const account_positions = await account.getPosistion()
@@ -13,10 +14,8 @@ const init = async () => {
     value = parseInt(cash) + parseInt(long_market_value);
     console.log('Buying power = ' + buying_power + ' cash = ' + cash + ' long market value = ' + long_market_value);
     console.log('equity = '+ value);
-
-
-    console.log(staged_buy);
-    console.log(staged_sell);
+    console.log(buy);
+    console.log(sell);
     const start = async () => {
         try {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
@@ -59,9 +58,11 @@ const init = async () => {
             // that way the candlestick is growing up and we are buying on continuation
             if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
                 staged_buy.push(tick);
+                addToStageBuy(tick);
             }
             if (((bars[0].ClosePrice - bars[0].OpenPrice) < 0) && (bars[0].LowPrice <= bars[1].HighPrice)) {
                 staged_sell.push(tick);
+                addToStageSell(tick);
             }
         }
         console.log("Staged to sell: " + staged_sell);
