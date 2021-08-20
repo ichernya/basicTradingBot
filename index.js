@@ -3,7 +3,8 @@ const moment = require("moment");
 const { getEnabledCategories } = require('trace_events');
 const account = require('./lib/account');
 const orders = require('./lib/orders');
-const {buy, sell, addToStageSell, addToStageBuy} = require('./server.js')
+const server = require('./server.js');
+const moves = require('./moves.js');
 
 const init = async () => {
     const account_positions = await account.getPosistion()
@@ -13,9 +14,14 @@ const init = async () => {
     long_market_value = acc.long_market_value;
     value = parseInt(cash) + parseInt(long_market_value);
     console.log('Buying power = ' + buying_power + ' cash = ' + cash + ' long market value = ' + long_market_value);
-    console.log('equity = '+ value);
-    console.log(buy);
-    console.log(sell);
+    console.log('equity = ' + value);
+
+    const overBuy = await server.pullFromStagedBuy();
+    const overSell = await server.pullFromStagedSell();
+    console.log("overBuy : " + overBuy);
+    console.log("overSell : " + overSell);
+    moves.buy(overBuy);
+    moves.sell(overSell);
     const start = async () => {
         try {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
@@ -58,13 +64,31 @@ const init = async () => {
             // that way the candlestick is growing up and we are buying on continuation
             if (((bars[0].ClosePrice - bars[0].OpenPrice) > 0) && (bars[0].HighPrice >= bars[1].LowPrice)) {
                 staged_buy.push(tick);
-                addToStageBuy(tick);
+                var found = false
+                for (stock of overBuy) {
+                    if (stock.ticker == tick) {
+                        console.log("duplicate");
+                        found = true;
+                        break
+                    }
+                }
+                if (!found) {server.addToStageBuy(tick);}
             }
+            
             if (((bars[0].ClosePrice - bars[0].OpenPrice) < 0) && (bars[0].LowPrice <= bars[1].HighPrice)) {
                 staged_sell.push(tick);
-                addToStageSell(tick);
+                var found = false
+                for (stock of overSell) {
+                    if (stock.ticker == tick) {
+                        console.log("duplicate");
+                        found = true;
+                        break
+                    }
+                }
+                if (!found) {server.addToStageSell(tick);}
             }
         }
+
         console.log("Staged to sell: " + staged_sell);
         console.log("Staged to buy: " + staged_buy);
         console.log("Staged to sell && able to sell:")
@@ -73,7 +97,6 @@ const init = async () => {
                 console.log(stock);
             }
         }
-
 
         // price of stock in real time ==
         // for (var tick of staged_buy) {
