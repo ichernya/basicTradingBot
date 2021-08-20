@@ -20,8 +20,8 @@ const init = async () => {
     const overSell = await server.pullFromStagedSell();
     console.log("overBuy : " + overBuy);
     console.log("overSell : " + overSell);
-    moves.buy(overBuy);
-    moves.sell(overSell);
+    //moves.buy(overBuy);
+    //moves.sell(overSell);
     const start = async () => {
         try {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
