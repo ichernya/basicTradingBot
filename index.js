@@ -6,15 +6,14 @@ const orders = require('./lib/orders');
 const server = require('./server.js');
 const moves = require('./moves.js');
 
+
+const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX'];
 const init = async () => {
+    
     const account_positions = await account.getPosistion()
     const acc = await account.getAccount();
-    buying_power = acc.buying_power;
-    cash = acc.cash;
-    long_market_value = acc.long_market_value;
-    value = parseInt(cash) + parseInt(long_market_value);
-    console.log('Buying power = ' + buying_power + ' cash = ' + cash + ' long market value = ' + long_market_value);
-    console.log('equity = ' + value);
+    console.log('Buying power = ' + acc.buying_power + ' cash = ' + acc.cash + ' long market value = ' + acc.long_market_value);
+    console.log('equity = ' + parseInt(acc.cash) + parseInt(acc.long_market_value));
 
     const overBuy = await server.pullFromStagedBuy();
     const overSell = await server.pullFromStagedSell();
@@ -25,29 +24,11 @@ const init = async () => {
     const start = async () => {
         try {
         // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
-        const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX'];
+        
         for (var i = 0; i < tickers.length; i++) {
             var asset = await orders.getAsset(tickers[i]);
             //console.log(asset);
         }
-        bodyBuy = {
-            "symbol": "AAPL",
-            "qty": 1,
-            "side": "buy",
-            "type": "market",
-            "time_in_force": "day"
-            };
-
-        //await buyAsset(body);
-
-        bodySell = {
-            "symbol": "AAPL",
-            "qty": 1,
-            "side": "buy",
-            "type": "market",
-            "time_in_force": "day"
-            };
-
         var staged_buy = [];
         var staged_sell = [];
         var bars = [];

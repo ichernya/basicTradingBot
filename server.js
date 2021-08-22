@@ -51,9 +51,19 @@ const pullFromStagedSell = async () => {
     return all;
 }
 
+const dropFromStagedBuy = async () => {
+    await Buy.deleteMany({});
+}
+
+const dropFromStagedSell = async () => {
+    await Sell.deleteMany({});
+}
+
 module.exports = {
     addToStageBuy,
     addToStageSell,
     pullFromStagedBuy,
     pullFromStagedSell,
+    dropFromStagedBuy,
+    dropFromStagedSell,
 };
