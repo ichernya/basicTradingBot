@@ -2,6 +2,8 @@ require('dotenv').config();
 const moment = require("moment");
 const orders = require('./lib/orders');
 const servers = require('./server.js');
+
+
 const bodyBuy = {
     "qty": 10,
     "side": "buy",
@@ -23,10 +25,11 @@ var buy = async function(overBuy){
     var bars = [];
     for(stock of overBuy) {
         bars = [];
-        for (var daysAgo = 0; daysAgo < 1; daysAgo++) {
+        for (var daysAgo = 0; daysAgo < 2; daysAgo++) {
             let start =  moment().subtract(daysAgo+1, "days").format();
             let end = moment().subtract(daysAgo, "days").format();
-            let bar = await orders.getBars(stock, start, end);
+            console.log(stock.ticker)
+            let bar = await orders.getBars(stock.ticker, start, end);
             (bar && bars.push(bar));
         }
         if (bars[0].LowPrice > bars[1].LowPrice) {
@@ -47,12 +50,14 @@ var sell = async function(overSell){
     console.log("Stocks found to be a sell : ")
     for(stock of overSell) {
         bars = [];
-        for (var daysAgo = 0; daysAgo < 1; daysAgo++) {
+        for (var daysAgo = 0; daysAgo < 2; daysAgo++) {
             let start =  moment().subtract(daysAgo+1, "days").format();
             let end = moment().subtract(daysAgo, "days").format();
-            let bar = await orders.getBars(stock, start, end);
+            let bar = await orders.getBars(stock.ticker, start, end);
             (bar && bars.push(bar));
         }
+        console.log(bars)
+        console.log(stock)
         if (bars[0].HighPrice < bars[1].HighPrice) {
             console.log(stock.ticker);
             bodySell["symbol"] = stock.ticker;
