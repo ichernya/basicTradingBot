@@ -9,7 +9,7 @@ const moves = require('./moves.js');
 
 
 // const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'MFST', 'NVDA', 'GOOG', 'VOX', 'VZ'];
-const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX']; // Stocks that are to be examined
+const tickers = ['AAPL', 'AMD', 'SOFI', 'XLNX', 'TSLA', 'NVDA', 'GOOG', 'VOX', 'VZ']; // Stocks that are to be examined
 const init = async () => {
     // returns basic information about the account
     const account_positions = await account.getPosistion()
